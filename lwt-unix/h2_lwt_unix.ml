@@ -44,6 +44,7 @@ module Server = struct
       =
       let make_tls_server =
         Gluten_lwt_unix.Server.TLS.create_default
+          ~ciphers:Tls.Config.Ciphers.http2
           ~alpn_protocols:[ "h2" ]
           ~certfile
           ~keyfile
@@ -90,7 +91,10 @@ module Client = struct
     let create_connection_with_default
         ?config ?push_handler ~error_handler socket
       =
-      Gluten_lwt_unix.Client.TLS.create_default ~alpn_protocols:[ "h2" ] socket
+      Gluten_lwt_unix.Client.TLS.create_default
+        ~ciphers:Tls.Config.Ciphers.http2
+        ~alpn_protocols:[ "h2" ]
+        socket
       >>= fun tls_client ->
       create_connection ?config ?push_handler ~error_handler tls_client
   end
